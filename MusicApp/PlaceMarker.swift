@@ -47,10 +47,7 @@ class PlaceMarker: NSObject, MKAnnotation {
 
     func startLife(_ delegate: AnnotationChangeDelegate) {
         self.delegate = delegate
-        DispatchQueue.main.async {
-            self.timer = Timer.init(timeInterval: TimeInterval(self.lifeSpan), target: self, selector: #selector(self.selfDestruct), userInfo: nil, repeats: false)
 
-            print(self.timer?.isValid)
-        }
+        self.timer = Timer.scheduledTimer(timeInterval: TimeInterval(self.lifeSpan), target: self, selector: #selector(self.selfDestruct), userInfo: nil, repeats: false)
     }
 }
