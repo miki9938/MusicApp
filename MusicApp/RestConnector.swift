@@ -59,7 +59,6 @@ class RestConnector {
                         //"Your requests are exceeding the allowable rate limit" -> as an output visible in simpleParse
                     }
                 } else {
-
                     errorHandler("No data received")
                 }
             }

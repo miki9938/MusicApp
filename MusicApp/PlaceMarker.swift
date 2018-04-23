@@ -17,14 +17,14 @@ class PlaceMarker: NSObject, MKAnnotation {
 
     let id: String
     let title: String?
-    let locationType: String
+    let locationType: PlaceTypeEnum
     let lifeTime: Int
     let coordinate: CLLocationCoordinate2D
 
     private var timer: Timer?
     weak var delegate: AnnotationChangeDelegate?
 
-    init(id: String, title: String, lifeSpan: Int, locationType: String, coordinate: CLLocationCoordinate2D) {
+    init(id: String, title: String, lifeSpan: Int, locationType: PlaceTypeEnum, coordinate: CLLocationCoordinate2D) {
         self.id = id
         self.title = title
         self.lifeTime = lifeSpan
@@ -35,17 +35,17 @@ class PlaceMarker: NSObject, MKAnnotation {
     }
 
     var subtitle: String? {
-        return locationType
+        return locationType.rawValue
     }
 
     var imageName: String? {
         switch locationType {
-        case "Venue":
+        case .venue:
             return "venue"
-        case "Stadium":
-            return "stadium"
-        case "Studio":
-            return "note"
+        case .stadium:
+            return "arena"
+        case .religiousBuilding:
+            return "chapel"
         default:
             return "music"
         }
