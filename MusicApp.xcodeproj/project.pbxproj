@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		D00D6859208CA3AD00493A9C /* ResponseModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D00D6858208CA3AD00493A9C /* ResponseModel.swift */; };
 		D00D685B208D057400493A9C /* PlaceMarker.swift in Sources */ = {isa = PBXBuildFile; fileRef = D00D685A208D057400493A9C /* PlaceMarker.swift */; };
+		D0169D72208E4CCA00D091E7 /* PlaceMarkerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0169D71208E4CCA00D091E7 /* PlaceMarkerView.swift */; };
 		D0F681CC208BA65700A72EBB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0F681CB208BA65700A72EBB /* AppDelegate.swift */; };
 		D0F681CE208BA65700A72EBB /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0F681CD208BA65700A72EBB /* ViewController.swift */; };
 		D0F681D1208BA65700A72EBB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D0F681CF208BA65700A72EBB /* Main.storyboard */; };
@@ -40,6 +41,7 @@
 /* Begin PBXFileReference section */
 		D00D6858208CA3AD00493A9C /* ResponseModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseModel.swift; sourceTree = "<group>"; };
 		D00D685A208D057400493A9C /* PlaceMarker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceMarker.swift; sourceTree = "<group>"; };
+		D0169D71208E4CCA00D091E7 /* PlaceMarkerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceMarkerView.swift; sourceTree = "<group>"; };
 		D0F681C8208BA65700A72EBB /* MusicApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MusicApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D0F681CB208BA65700A72EBB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D0F681CD208BA65700A72EBB /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -115,6 +117,7 @@
 				D0F681FB208BB11400A72EBB /* PlaceModel.swift */,
 				D00D6858208CA3AD00493A9C /* ResponseModel.swift */,
 				D00D685A208D057400493A9C /* PlaceMarker.swift */,
+				D0169D71208E4CCA00D091E7 /* PlaceMarkerView.swift */,
 			);
 			path = MusicApp;
 			sourceTree = "<group>";
@@ -273,6 +276,7 @@
 				D0F681CC208BA65700A72EBB /* AppDelegate.swift in Sources */,
 				D00D685B208D057400493A9C /* PlaceMarker.swift in Sources */,
 				D00D6859208CA3AD00493A9C /* ResponseModel.swift in Sources */,
+				D0169D72208E4CCA00D091E7 /* PlaceMarkerView.swift in Sources */,
 				D0F681FA208BA68C00A72EBB /* RestConnector.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

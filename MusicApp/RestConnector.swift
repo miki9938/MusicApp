@@ -15,11 +15,12 @@ enum Result<Value> {
 
 class RestConnector {
 
-    let musicBrainzEndpoint = "musicbrainz.org"
     let batchSize = 20
     let minimumYear = 1990
 
     func getPlaces(search: String, errorHandler: @escaping (_ error: String?) -> Void, succesHandler: @escaping (_ places: [PlaceModel]) -> Void, offset: Int = 0) {
+
+        print("# getPlace: \(search) offset: \(offset)")
 
         var urlComponents = URLComponents()
         urlComponents.scheme = "https"
@@ -32,6 +33,66 @@ class RestConnector {
 
         guard let url = urlComponents.url else { fatalError("Could not create URL from components") }
 
+//        sendHttpRequest(url: url,
+//                        errorHandler: { (error: Error?) in
+//                            if error != nil {
+//                                errorHandler(error!.localizedDescription)
+//                            }
+//        },
+//                        successHandler: { (response: ResponseModel) in
+//                            if response.offset + self.batchSize < response.count {
+//                                
+//                            }
+//
+//        })
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.addValue("application/json", forHTTPHeaderField: "Accept")
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+
+//        let config = URLSessionConfiguration.default
+        let session = URLSession(configuration: URLSessionConfiguration.default)
+        let task = session.dataTask(with: request) { (data, response, error) in
+//            DispatchQueue.global().async {
+                if let error = error {
+                    errorHandler(error.localizedDescription)
+                } else if let jsonData = data {
+                    let decoder = JSONDecoder()
+                    do {
+                        let response = try decoder.decode(ResponseModel.self, from: jsonData)
+
+                        if response.offset + self.batchSize < response.count {
+                            self.getPlaces(search: search, errorHandler: errorHandler, succesHandler: succesHandler, offset: response.offset + self.batchSize)
+                        }
+                        succesHandler(response.places)
+                    } catch {
+                        errorHandler(error.localizedDescription)
+                    }
+                } else {
+//                    let error = NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey : "Data was not retrieved from request"]) as Error
+                    errorHandler("No data received")
+                }
+//            }
+        }
+
+        task.resume()
+    }
+
+//    func sendHttpRequest<T: Codable>(url: URL, object: T) {
+//        let jsonData = Data()
+//        let decoder = JSONDecoder()
+//        do {
+//            let response = try decoder.decode(T.self, from: jsonData)
+//
+////            succesHandler(response.places)
+//        } catch {
+////            errorHandler(error.localizedDescription)
+//        }
+//
+//    }
+
+    func sendHttpRequest<T: Codable>(url: URL, errorHandler: @escaping (_ error: Error?) -> Void, successHandler: @escaping (_ object: T) -> Void) {
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         request.addValue("application/json", forHTTPHeaderField: "Accept")
@@ -39,119 +100,27 @@ class RestConnector {
 
         let config = URLSessionConfiguration.default
         let session = URLSession(configuration: config)
-        let task = session.dataTask(with: request) { (responseData, response, responseError) in
-            DispatchQueue.global().async {
-                if let error = responseError {
-                    errorHandler(error.localizedDescription)
-                } else if let jsonData = responseData {
-                    let decoder = JSONDecoder()
+        let task = session.dataTask(with: request) { data, response, error in
+
+            if error == nil {
+                if let jsonData = data {
                     print("jsonData: ", String(data: jsonData, encoding: .utf8) ?? "no body data")
+                    let decoder = JSONDecoder()
+
                     do {
-                        let response = try decoder.decode(ResponseModel.self, from: jsonData)
-                        print(response.count)
-                        succesHandler(response.places)
+                        let places = try decoder.decode(T.self, from: jsonData)
+                        successHandler(places)
                     } catch {
-                        errorHandler(error.localizedDescription)
+                        errorHandler(error)
                     }
                 } else {
                     let error = NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey : "Data was not retrieved from request"]) as Error
-                    errorHandler(error.localizedDescription)
+                    errorHandler(error)
                 }
             }
         }
-
         task.resume()
     }
-
-//    func sendHttpRequest<T>(url: URL, object: T) {
-//        var request = URLRequest(url: url)
-//        request.httpMethod = "GET"
-//        request.addValue("application/json", forHTTPHeaderField: "Accept")
-//        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-//
-//        let config = URLSessionConfiguration.default
-//        let session = URLSession(configuration: config)
-//        let task = session.dataTask(with: request) {data, response, error in
-//
-//            if let httpResponse = response as? HTTPURLResponse {
-//                print("--REST response--")
-//                if error == nil {
-//                    if httpResponse.statusCode.description == "200" {
-//                        self.handleRedirection(httpResponse)
-//
-//                        let result = String(data: data!, encoding: String.Encoding.utf8)!
-//
-//                        if result != "" {
-//                            obj = Mapper<T>().map(JSONString: result)
-//                            //printRESTresults
-//                            //                            print("")
-//                            //                            print(result)
-//                        }
-//                        successHandler(obj)
-//                    } else {
-//                        print(httpResponse.statusCode.description)
-//
-//                        //                        let data = String(data: data!, encoding: String.Encoding.utf8)
-//                        //                        print(data ?? "No data")
-//                        //                        errorHandler(code: httpResponse.statusCode.description + data!)
-//                        errorHandler(String(httpResponse.statusCode))
-//                    }
-//                } else if error != nil {
-//                    print(httpResponse.statusCode.description)
-//                    errorHandler(httpResponse.statusCode.description)
-//                }
-//            }
-//
-//            if error != nil {
-//                print(error?.localizedDescription)
-//            } else if let jsonData = response {
-//
-//                print("jsonData: ", String(data: jsonData, encoding: .utf8) ?? "no body data")
-//                let decoder = JSONDecoder()
-//
-//                do {
-//                    let posts = try decoder.decode(ResponseModel.self, from: jsonData)
-//                    completion?(.success(posts))
-//                } catch {
-//                    completion?(.failure(error))
-//                }
-//            } else {
-//                let error = NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey : "Data was not retrieved from request"]) as Error
-//                completion?(.failure(error))
-//            }
-//
-//            DispatchQueue.main.async {
-//                if let error = responseError {
-//                    completion?(.failure(error))
-//                } else if let jsonData = responseData {
-//                    // Now we have jsonData, Data representation of the JSON returned to us
-//                    // from our URLRequest...
-//
-//                    // Create an instance of JSONDecoder to decode the JSON data to our
-//                    // Codable struct
-//                    print(jsonData)
-//                    print("jsonData: ", String(data: jsonData, encoding: .utf8) ?? "no body data")
-//                    let decoder = JSONDecoder()
-//
-//                    do {
-//                        // We would use Post.self for JSON representing a single Post
-//                        // object, and [Post].self for JSON representing an array of
-//                        // Post objects
-//                        let posts = try decoder.decode(ResponseModel.self, from: jsonData)
-//                        completion?(.success(posts))
-//                    } catch {
-//                        completion?(.failure(error))
-//                    }
-//                } else {
-//                    let error = NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey : "Data was not retrieved from request"]) as Error
-//                    completion?(.failure(error))
-//                }
-//            }
-//        }
-//
-//        task.resume()
-//    }
-//    }
 //
 //    func getPosts(completion: ((Result<ResponseModel>) -> Void)?) {
 //        var urlComponents = URLComponents()

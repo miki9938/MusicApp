@@ -13,14 +13,12 @@ class ViewController: UIViewController {
 
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var searchBar: UISearchBar!
+    @IBOutlet weak var fitMarkersButton: UIButton!
 
-    var objects = [PlaceModel]()
-    var restConnector: RestConnector = RestConnector()
+    private var restConnector: RestConnector = RestConnector()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
-//        loadPoints(searchTerm: "")
 
         if let textfield = searchBar.value(forKey: "searchField") as? UITextField {
             if let backgroundView = textfield.subviews.first {
@@ -29,100 +27,95 @@ class ViewController: UIViewController {
                 backgroundView.clipsToBounds = true;
             }
         }
+
+        fitMarkersButton.layer.cornerRadius = 20
+
+        mapView.register(PlaceMarkerView.self, forAnnotationViewWithReuseIdentifier: MKMapViewDefaultAnnotationViewReuseIdentifier)
+        mapView.showsUserLocation = false
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    @IBAction func onFitAll(_ sender: Any) {
+
+        var mapRect = MKMapRectNull;
+        for annotation in mapView.annotations {
+            let marker = MKMapPointForCoordinate(annotation.coordinate)
+            let pointRect = MKMapRectMake(marker.x, marker.y, 1, 1);
+            mapRect = MKMapRectUnion(mapRect, pointRect);
+        }
+       mapView.setVisibleMapRect(mapRect, edgePadding: UIEdgeInsetsMake(100, 100, 100, 100), animated: true)
     }
 
-
-    func buttonTapped() {
-
+    func showFitButton(_ show: Bool) {
+        if show {
+            DispatchQueue.main.async {
+                self.fitMarkersButton.isHidden = false
+            }
+        } else {
+            UIView.animate(withDuration: 0.3, animations: {
+                self.fitMarkersButton.isHidden = true
+            })
+        }
     }
 
     func loadPoints(searchTerm: String) {
 
         restConnector.getPlaces(search: searchTerm, errorHandler: errorHandler, succesHandler: successHandler)
-
-
-//        restConnector.getPosts() { (result) in
-//            switch result {
-//            case .success(let results):
-//                self.objects.append(contentsOf: results.places)
-//                //                for place in results.places {
-//                //                    self.objects.append(contentsOf: r)
-//                //                }
-//                let initialLocation = CLLocation(latitude: Double(self.objects[0].coordinates.latitude)!, longitude: Double(self.objects[0].coordinates.longitude)!)
-//
-//                self.setMapToLocation(initialLocation)
-//                print(results.offset)
-//            case .failure(let error):
-//                fatalError("error: \(error.localizedDescription)")
-//            }
-//        }
+        DispatchQueue.main.async {
+            self.mapView.removeAnnotations(self.mapView.annotations)
+        }
     }
 
     func errorHandler(_ error: String?) {
-        print(error as Any)
+        print(error ?? "some error")
     }
 
     func successHandler(_ places: [PlaceModel]) {
         if places.isEmpty {
             print("no results")
         } else {
-        let initialLocation = CLLocation(latitude: Double(places[0].coordinates!.latitude)!,
-                                         longitude: Double(places[0].coordinates!.longitude)!)
-        self.setMapToLocation(initialLocation)
-
-            for place in places {
-                if place.coordinates != nil {
+            for place in places where place.coordinates != nil {
                     addAnnotation(object: place)
-                }
             }
         }
     }
 
-    func setMapToLocation(_ location: CLLocation) {
-        let coordinateRegion = MKCoordinateRegionMakeWithDistance(location.coordinate, 2000, 2000)
-        mapView.setRegion(coordinateRegion, animated: true)
-    }
-
     func addAnnotation(object: PlaceModel) {
-        let place = PlaceMarker(title: object.name!,
+        let place = PlaceMarker(id: object.id,
+                                title: object.name!,
                                 lifeSpan: object.lifeSpan.beginYear,
-                              locationType: object.type ?? "Other",
-                              coordinate: CLLocationCoordinate2D(latitude: Double(object.coordinates!.latitude)!, longitude: Double(object.coordinates!.longitude)!))
-        DispatchQueue.main.async {
-            self.mapView.addAnnotation(place)
-            place.startLife(self)
-        }
+                                locationType: (object.type?.rawValue ?? PlaceTypeEnum.other.rawValue),
+                                coordinate: CLLocationCoordinate2D(latitude: Double(object.coordinates!.latitude)!, longitude: Double(object.coordinates!.longitude)!))
+
+            DispatchQueue.main.async {
+                self.mapView.addAnnotation(place)
+                place.startLife(self)
+            }
+            print("after add: \(mapView.annotations.count)")
+            showFitButton(true)
     }
 
     func removeAnnotation(_ marker: PlaceMarker) {
         DispatchQueue.main.async {
             self.mapView.removeAnnotation(marker)
         }
+        if mapView.annotations.count <= 1 {
+            showFitButton(false)
+        }
     }
-
 }
 
 extension ViewController: UISearchBarDelegate {
 
     func searchBar(_ searchBar: UISearchBar, textDidChange: String) {
-
-//        filterContentFor(searchText: textDidChange)
         if textDidChange == "" {
             self.view.endEditing(true)
         }
     }
 
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-//        filterContentFor(searchText: searchBar.text!)
         loadPoints(searchTerm: searchBar.text!)
         self.view.endEditing(true)
     }
-
 }
 
 extension ViewController: AnnotationChangeDelegate {
@@ -130,10 +123,3 @@ extension ViewController: AnnotationChangeDelegate {
         removeAnnotation(marker)
     }
 }
-
-//extension ViewController: UISearchResultsUpdating {
-//    func updateSearchResults(for searchController: UISearchController) {
-//
-//        filterContentFor(searchText: searchController.searchBar.text!)
-//    }
-//}

@@ -12,7 +12,7 @@ import Foundation
 struct PlaceModel: Codable {
 
     var id: String
-    var type: String? = "Other"
+    var type: PlaceTypeEnum?
     var name: String?
 
     var coordinates: Coords?
@@ -190,11 +190,12 @@ struct AliasModel: Codable {
 
 }
 
-enum PlaceTypeEnum {
-    case Studio,
-    Venue,
-    Stadium,
-    IndoorArena,
-    ReligiousBuilding,
-    Other
+enum PlaceTypeEnum: String, Codable {
+    case studio = "Studio",
+    venue = "Venue",
+    stadium = "Stadium",
+    indoorArena = "Indoor arena",
+    religiousBuilding = "ReligiousBuilding",
+    other = "Other",
+    edu = "Educational institution"
 }

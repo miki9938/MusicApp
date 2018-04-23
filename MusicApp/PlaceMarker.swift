@@ -15,6 +15,7 @@ protocol AnnotationChangeDelegate: class {
 
 class PlaceMarker: NSObject, MKAnnotation {
 
+    let id: String
     let title: String?
     let locationType: String
     let lifeSpan: Int
@@ -24,19 +25,31 @@ class PlaceMarker: NSObject, MKAnnotation {
 
     weak var delegate: AnnotationChangeDelegate?
 
-    init(title: String, lifeSpan: Int, locationType: String, coordinate: CLLocationCoordinate2D) {
+    init(id: String, title: String, lifeSpan: Int, locationType: String, coordinate: CLLocationCoordinate2D) {
+        self.id = id
         self.title = title
         self.lifeSpan = lifeSpan
         self.locationType = locationType
         self.coordinate = coordinate
 
         super.init()
-
-
     }
 
     var subtitle: String? {
         return locationType
+    }
+
+    var imageName: String?  {
+        switch locationType {
+        case "Venue":
+            return "venue"
+        case "Stadium":
+            return "stadium"
+        case "Studio":
+            return "note"
+        default:
+            return "music"
+        }
     }
 
     @objc func selfDestruct() {
@@ -45,9 +58,16 @@ class PlaceMarker: NSObject, MKAnnotation {
         }
     }
 
-    func startLife(_ delegate: AnnotationChangeDelegate) {
-        self.delegate = delegate
+    func startLife(_ delegate: AnnotationChangeDelegate?) {
+        if delegate != nil {
+            self.delegate = delegate
+        }
 
         self.timer = Timer.scheduledTimer(timeInterval: TimeInterval(self.lifeSpan), target: self, selector: #selector(self.selfDestruct), userInfo: nil, repeats: false)
+    }
+
+    func resetLife() {
+        self.timer?.invalidate()
+        self.startLife(nil)
     }
 }

@@ -20,6 +20,9 @@
                         <subviews>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="34v-GI-Hem">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <connections>
+                                    <outlet property="delegate" destination="BYZ-38-t0r" id="hrn-Un-JfD"/>
+                                </connections>
                             </mapView>
                             <searchBar contentMode="redraw" searchBarStyle="minimal" placeholder="Search for a music place" translatesAutoresizingMaskIntoConstraints="NO" id="5HK-OX-KvW">
                                 <rect key="frame" x="35" y="30" width="305" height="56"/>
@@ -32,20 +35,37 @@
                                     <outlet property="delegate" destination="BYZ-38-t0r" id="mt9-4d-wL8"/>
                                 </connections>
                             </searchBar>
+                            <stackView opaque="NO" alpha="0.90000000000000002" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="2dV-HX-OcF">
+                                <rect key="frame" x="95.5" y="617" width="185" height="30"/>
+                                <subviews>
+                                    <button opaque="NO" alpha="0.90000000000000002" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iqx-mo-QKT">
+                                        <rect key="frame" x="0.0" y="0.0" width="185" height="30"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <state key="normal" title="Move map to fit all markers"/>
+                                        <connections>
+                                            <action selector="onFitAll:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Ma8-m9-xPz"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </stackView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="2dV-HX-OcF" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="0eK-al-Qoa"/>
                             <constraint firstItem="34v-GI-Hem" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="1Q8-pP-h7A"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="5HK-OX-KvW" secondAttribute="trailing" constant="35" id="5We-3i-SwC"/>
                             <constraint firstItem="5HK-OX-KvW" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="10" id="5s0-E5-Y2T"/>
                             <constraint firstAttribute="trailing" secondItem="34v-GI-Hem" secondAttribute="trailing" id="bi8-hn-oO9"/>
                             <constraint firstItem="34v-GI-Hem" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="eGG-3n-FF5"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="2dV-HX-OcF" secondAttribute="bottom" constant="20" id="kVb-S9-m8x"/>
                             <constraint firstItem="5HK-OX-KvW" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="35" id="o68-i0-Jd7"/>
                             <constraint firstAttribute="bottom" secondItem="34v-GI-Hem" secondAttribute="bottom" id="vtN-Ye-EnV"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
+                        <outlet property="fitMarkersButton" destination="iqx-mo-QKT" id="C10-dl-dlK"/>
                         <outlet property="mapView" destination="34v-GI-Hem" id="2Jd-qx-oOr"/>
                         <outlet property="searchBar" destination="5HK-OX-KvW" id="0iX-f6-hzc"/>
                     </connections>
