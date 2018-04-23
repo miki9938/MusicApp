@@ -16,15 +16,15 @@ class ViewController: UIViewController {
     @IBOutlet weak var fitMarkersButton: UIButton!
 
     private var restConnector: RestConnector = RestConnector()
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
         if let textfield = searchBar.value(forKey: "searchField") as? UITextField {
             if let backgroundView = textfield.subviews.first {
                 backgroundView.backgroundColor = UIColor(red: 255, green: 255, blue: 255, alpha: 0.7)
-                backgroundView.layer.cornerRadius = 10;
-                backgroundView.clipsToBounds = true;
+                backgroundView.layer.cornerRadius = 10
+                backgroundView.clipsToBounds = true
             }
         }
 
@@ -36,13 +36,14 @@ class ViewController: UIViewController {
 
     @IBAction func onFitAll(_ sender: Any) {
 
-        var mapRect = MKMapRectNull;
+        var mapRect = MKMapRectNull
         for annotation in mapView.annotations {
             let marker = MKMapPointForCoordinate(annotation.coordinate)
-            let pointRect = MKMapRectMake(marker.x, marker.y, 1, 1);
-            mapRect = MKMapRectUnion(mapRect, pointRect);
+            let pointRect = MKMapRectMake(marker.x, marker.y, 1, 1)
+
+            mapRect = MKMapRectUnion(mapRect, pointRect)
         }
-       mapView.setVisibleMapRect(mapRect, edgePadding: UIEdgeInsetsMake(100, 100, 100, 100), animated: true)
+       mapView.setVisibleMapRect(mapRect, edgePadding: UIEdgeInsets(top: 100, left: 100, bottom: 100, right: 100), animated: true)
     }
 
     func showFitButton(_ show: Bool) {
@@ -73,24 +74,25 @@ class ViewController: UIViewController {
         if places.isEmpty {
             print("no results")
         } else {
-            for place in places where place.coordinates != nil {
+            for place in places where place.coordinates != nil && place.lifeSpan.lifeTime > 0 {
                     addAnnotation(object: place)
             }
         }
     }
 
     func addAnnotation(object: PlaceModel) {
+
         let place = PlaceMarker(id: object.id,
                                 title: object.name!,
-                                lifeSpan: object.lifeSpan.beginYear,
+                                lifeSpan: object.lifeSpan.lifeTime,
                                 locationType: (object.type?.rawValue ?? PlaceTypeEnum.other.rawValue),
-                                coordinate: CLLocationCoordinate2D(latitude: Double(object.coordinates!.latitude)!, longitude: Double(object.coordinates!.longitude)!))
+                                coordinate: CLLocationCoordinate2D(latitude: object.coordinates!.latitude,
+                                                                   longitude: object.coordinates!.longitude))
 
             DispatchQueue.main.async {
                 self.mapView.addAnnotation(place)
                 place.startLife(self)
             }
-            print("after add: \(mapView.annotations.count)")
             showFitButton(true)
     }
 

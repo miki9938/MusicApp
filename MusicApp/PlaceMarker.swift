@@ -18,17 +18,16 @@ class PlaceMarker: NSObject, MKAnnotation {
     let id: String
     let title: String?
     let locationType: String
-    let lifeSpan: Int
+    let lifeTime: Int
     let coordinate: CLLocationCoordinate2D
 
     private var timer: Timer?
-
     weak var delegate: AnnotationChangeDelegate?
 
     init(id: String, title: String, lifeSpan: Int, locationType: String, coordinate: CLLocationCoordinate2D) {
         self.id = id
         self.title = title
-        self.lifeSpan = lifeSpan
+        self.lifeTime = lifeSpan
         self.locationType = locationType
         self.coordinate = coordinate
 
@@ -39,7 +38,7 @@ class PlaceMarker: NSObject, MKAnnotation {
         return locationType
     }
 
-    var imageName: String?  {
+    var imageName: String? {
         switch locationType {
         case "Venue":
             return "venue"
@@ -63,11 +62,6 @@ class PlaceMarker: NSObject, MKAnnotation {
             self.delegate = delegate
         }
 
-        self.timer = Timer.scheduledTimer(timeInterval: TimeInterval(self.lifeSpan), target: self, selector: #selector(self.selfDestruct), userInfo: nil, repeats: false)
-    }
-
-    func resetLife() {
-        self.timer?.invalidate()
-        self.startLife(nil)
+        self.timer = Timer.scheduledTimer(timeInterval: TimeInterval(self.lifeTime), target: self, selector: #selector(self.selfDestruct), userInfo: nil, repeats: false)
     }
 }

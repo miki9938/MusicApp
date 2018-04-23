@@ -23,19 +23,3 @@ class PlaceMarkerView: MKMarkerAnnotationView {
         }
     }
 }
-
-//class PlaceView: MKAnnotationView {
-//
-//    override var annotation: MKAnnotation? {
-//        willSet {
-//            guard let placeMarker = newValue as? PlaceMarker else { return }
-//
-//            if let imageName = placeMarker.imageName {
-//                image = UIImage(named: imageName)
-//            } else {
-//                image = nil
-//            }
-//        }
-//    }
-//}
-

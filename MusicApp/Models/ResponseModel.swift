@@ -10,7 +10,7 @@ import Foundation
 
 struct ResponseModel: Codable {
 
-    var created: String
+    var created: String?
     var count: Int
     var offset: Int
     var places: [PlaceModel]

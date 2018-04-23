@@ -10,6 +10,7 @@
 		D00D6859208CA3AD00493A9C /* ResponseModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D00D6858208CA3AD00493A9C /* ResponseModel.swift */; };
 		D00D685B208D057400493A9C /* PlaceMarker.swift in Sources */ = {isa = PBXBuildFile; fileRef = D00D685A208D057400493A9C /* PlaceMarker.swift */; };
 		D0169D72208E4CCA00D091E7 /* PlaceMarkerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0169D71208E4CCA00D091E7 /* PlaceMarkerView.swift */; };
+		D0169D76208E7DA200D091E7 /* MusicAppConnectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0169D75208E7DA200D091E7 /* MusicAppConnectionTests.swift */; };
 		D0F681CC208BA65700A72EBB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0F681CB208BA65700A72EBB /* AppDelegate.swift */; };
 		D0F681CE208BA65700A72EBB /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0F681CD208BA65700A72EBB /* ViewController.swift */; };
 		D0F681D1208BA65700A72EBB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D0F681CF208BA65700A72EBB /* Main.storyboard */; };
@@ -42,6 +43,7 @@
 		D00D6858208CA3AD00493A9C /* ResponseModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseModel.swift; sourceTree = "<group>"; };
 		D00D685A208D057400493A9C /* PlaceMarker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceMarker.swift; sourceTree = "<group>"; };
 		D0169D71208E4CCA00D091E7 /* PlaceMarkerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceMarkerView.swift; sourceTree = "<group>"; };
+		D0169D75208E7DA200D091E7 /* MusicAppConnectionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicAppConnectionTests.swift; sourceTree = "<group>"; };
 		D0F681C8208BA65700A72EBB /* MusicApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MusicApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D0F681CB208BA65700A72EBB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D0F681CD208BA65700A72EBB /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -84,6 +86,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		D0169D74208E78B600D091E7 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				D0F681FB208BB11400A72EBB /* PlaceModel.swift */,
+				D00D6858208CA3AD00493A9C /* ResponseModel.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		D0F681BF208BA65700A72EBB = {
 			isa = PBXGroup;
 			children = (
@@ -107,6 +118,7 @@
 		D0F681CA208BA65700A72EBB /* MusicApp */ = {
 			isa = PBXGroup;
 			children = (
+				D0169D74208E78B600D091E7 /* Models */,
 				D0F681CB208BA65700A72EBB /* AppDelegate.swift */,
 				D0F681CD208BA65700A72EBB /* ViewController.swift */,
 				D0F681CF208BA65700A72EBB /* Main.storyboard */,
@@ -114,8 +126,6 @@
 				D0F681D4208BA65800A72EBB /* LaunchScreen.storyboard */,
 				D0F681D7208BA65900A72EBB /* Info.plist */,
 				D0F681F9208BA68C00A72EBB /* RestConnector.swift */,
-				D0F681FB208BB11400A72EBB /* PlaceModel.swift */,
-				D00D6858208CA3AD00493A9C /* ResponseModel.swift */,
 				D00D685A208D057400493A9C /* PlaceMarker.swift */,
 				D0169D71208E4CCA00D091E7 /* PlaceMarkerView.swift */,
 			);
@@ -127,6 +137,7 @@
 			children = (
 				D0F681E0208BA65900A72EBB /* MusicAppTests.swift */,
 				D0F681E2208BA65900A72EBB /* Info.plist */,
+				D0169D75208E7DA200D091E7 /* MusicAppConnectionTests.swift */,
 			);
 			path = MusicAppTests;
 			sourceTree = "<group>";
@@ -150,6 +161,7 @@
 				D0F681C4208BA65700A72EBB /* Sources */,
 				D0F681C5208BA65700A72EBB /* Frameworks */,
 				D0F681C6208BA65700A72EBB /* Resources */,
+				D0169D73208E751300D091E7 /* Swiftlint Run Script */,
 			);
 			buildRules = (
 			);
@@ -266,6 +278,23 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		D0169D73208E751300D091E7 /* Swiftlint Run Script */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Swiftlint Run Script";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if which swiftlint >/dev/null; then\nswiftlint\nelse\necho \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		D0F681C4208BA65700A72EBB /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -286,6 +315,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D0F681E1208BA65900A72EBB /* MusicAppTests.swift in Sources */,
+				D0169D76208E7DA200D091E7 /* MusicAppConnectionTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
