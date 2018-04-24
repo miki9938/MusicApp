@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  MapViewController.swift
 //  MusicApp
 //
 //  Created by Mikołaj Bujok on 21.04.2018.
@@ -9,17 +9,19 @@
 import MapKit
 import UIKit
 
-class ViewController: UIViewController {
+class MapViewController: UIViewController {
 
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var fitMarkersButton: UIButton!
+    @IBOutlet weak var errorLabel: UILabel!
 
     private var restConnector: RestConnector = RestConnector()
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        //Add custom layout for views
         if let textfield = searchBar.value(forKey: "searchField") as? UITextField {
             if let backgroundView = textfield.subviews.first {
                 backgroundView.backgroundColor = UIColor(red: 255, green: 255, blue: 255, alpha: 0.85)
@@ -37,7 +39,6 @@ class ViewController: UIViewController {
         fitMarkersButton.insertSubview(blur, at: 0)
 
         mapView.register(PlaceMarkerView.self, forAnnotationViewWithReuseIdentifier: MKMapViewDefaultAnnotationViewReuseIdentifier)
-        mapView.showsUserLocation = false
     }
 
     @IBAction func onFitAll(_ sender: Any) {
@@ -52,6 +53,10 @@ class ViewController: UIViewController {
        mapView.setVisibleMapRect(mapRect, edgePadding: UIEdgeInsets(top: 100, left: 100, bottom: 100, right: 100), animated: true)
     }
 
+    /**
+     Shows or hides "Fit all markers" button
+     - parameter show: Bool inicating desired isHidden state
+     */
     func showFitButton(_ show: Bool) {
         if show {
             DispatchQueue.main.async {
@@ -80,36 +85,52 @@ class ViewController: UIViewController {
         }
     }
 
+    func showError(_ error: String) {
+        DispatchQueue.main.async {
+            self.errorLabel.text = error
+            self.errorLabel.isHidden = false
+        }
+    }
+
+    /**
+     Requests via restConnector music places by search term
+     - parameter searchTerm: String search term for API query
+     */
     func loadPoints(searchTerm: String) {
 
-        restConnector.getPlaces(search: searchTerm, errorHandler: errorHandler, succesHandler: successHandler)
+        restConnector.getPlaces(searchTerm: searchTerm, succesHandler: loadSuccessHandler, errorHandler: { error in self.showError(error) })
         DispatchQueue.main.async {
+            self.errorLabel.isHidden = true
             self.mapView.removeAnnotations(self.mapView.annotations)
         }
     }
 
-    func errorHandler(_ error: String?) {
-        print(error ?? "some error")
-    }
-
-    func successHandler(_ places: [PlaceModel]) {
+    /**
+     Success handler for rest connector's getPlaces func.
+     - parameter places: An array of received places
+     */
+    func loadSuccessHandler(_ places: [PlaceModel]) {
         if places.isEmpty {
-            print("no results")
+            showError("No results")
         } else {
             for place in places where place.coordinates != nil && place.lifeSpan.lifeTime > 0 {
-                    addAnnotation(object: place)
+                    addPlaceToMap(place)
             }
         }
     }
 
-    func addAnnotation(object: PlaceModel) {
+    /**
+     Adds and annotation to map
+     - parameter place: A place model to be added
+     */
+    func addPlaceToMap(_ place: PlaceModel) {
 
-        let place = PlaceMarker(id: object.id,
-                                title: object.name!,
-                                lifeSpan: object.lifeSpan.lifeTime,
-                                locationType: (object.type ?? PlaceTypeEnum.other),
-                                coordinate: CLLocationCoordinate2D(latitude: object.coordinates!.latitude,
-                                                                   longitude: object.coordinates!.longitude))
+        let place = PlaceMarker(id: place.id,
+                                title: place.name!,
+                                lifeSpan: place.lifeSpan.lifeTime,
+                                locationType: (place.type ?? PlaceTypeEnum.other),
+                                coordinate: CLLocationCoordinate2D(latitude: place.coordinates!.latitude,
+                                                                   longitude: place.coordinates!.longitude))
 
             DispatchQueue.main.async {
                 self.mapView.addAnnotation(place)
@@ -118,6 +139,10 @@ class ViewController: UIViewController {
             showFitButton(true)
     }
 
+    /**
+     Removes indicated annotation from map
+     - parameter marker: A place marker to be removed
+     */
     func removeAnnotation(_ marker: PlaceMarker) {
         DispatchQueue.main.async {
             self.mapView.removeAnnotation(marker)
@@ -128,7 +153,7 @@ class ViewController: UIViewController {
     }
 }
 
-extension ViewController: UISearchBarDelegate {
+extension MapViewController: UISearchBarDelegate {
 
     func searchBar(_ searchBar: UISearchBar, textDidChange: String) {
         if textDidChange == "" {
@@ -142,7 +167,12 @@ extension ViewController: UISearchBarDelegate {
     }
 }
 
-extension ViewController: AnnotationChangeDelegate {
+extension MapViewController: AnnotationChangeDelegate {
+
+    /**
+     Removes indicated annotation from map
+     - parameter marker: A place marker to be removed
+     */
     func remove(marker: PlaceMarker) {
         removeAnnotation(marker)
     }

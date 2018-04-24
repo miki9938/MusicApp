@@ -10,24 +10,32 @@ import Foundation
 
 class RestConnector {
 
-    let batchSize = 20
-    let minimumYear = 1990
+    // Static constants for query
+    static let batchSize = 20
+    static let minimumYear = 1990
 
-    func getPlaces(search: String, errorHandler: @escaping (_ error: String?) -> Void, succesHandler: @escaping (_ places: [PlaceModel]) -> Void, offset: Int = 0) {
+    /**
+     Sends a HTTP GET request to  musicbrainz API with a query to find suitable places
+     - parameter searchTerm: Place name - main query parameter
+     - parameter succesHandler: Success handling closure
+     - parameter errorHandler: Error handling closure
+     - parameter offset: Offset number (optional), default value = 0
+     - parameter places: Array of received places
+     - parameter error: String error text
+     */
+    func getPlaces(searchTerm: String, succesHandler: @escaping (_ places: [PlaceModel]) -> Void, errorHandler: @escaping (_ error: String) -> Void, offset: Int = 0) {
 
-        print("# getPlace: \(search) offset: \(offset)")
+//        var urlComponents = URLComponents()
+//
+//        urlComponents.scheme = "https"
+//        urlComponents.host = "musicbrainz.org"
+//        urlComponents.path = "/ws/2/place"
+//        let query: String = String(format: "%@ AND begin:[%@ TO *]", searchTerm, String(minimumYear))
+//        urlComponents.queryItems = [URLQueryItem(name: "query", value: query),
+//                                    URLQueryItem(name: "limit", value: String(batchSize)),
+//                                    URLQueryItem(name: "offset", value: String(offset))]
 
-        var urlComponents = URLComponents()
-
-        urlComponents.scheme = "https"
-        urlComponents.host = "musicbrainz.org"
-        urlComponents.path = "/ws/2/place"
-        let query: String = String(format: "%@ AND begin:[%@ TO *]", search, String(minimumYear))
-        urlComponents.queryItems = [URLQueryItem(name: "query", value: query),
-                                    URLQueryItem(name: "limit", value: String(batchSize)),
-                                    URLQueryItem(name: "offset", value: String(offset))]
-
-        guard let url = urlComponents.url else { fatalError("Could not create URL from components") }
+        guard let url = createUrl(searchTerm: searchTerm, offset: offset) else { fatalError("Could not create URL from components") }
 
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
@@ -46,8 +54,8 @@ class RestConnector {
                     do {
                         let response = try decoder.decode(ResponseModel.self, from: jsonData)
 
-                        if response.offset + self.batchSize < response.count {
-                            self.getPlaces(search: search, errorHandler: errorHandler, succesHandler: succesHandler, offset: response.offset + self.batchSize)
+                        if response.offset + RestConnector.batchSize < response.count {
+                            self.getPlaces(searchTerm: searchTerm, succesHandler: succesHandler, errorHandler: errorHandler, offset: response.offset + RestConnector.batchSize)
                         }
                         succesHandler(response.places)
 
@@ -55,14 +63,29 @@ class RestConnector {
                         let simpleParse = String(data: jsonData, encoding: .utf8)
                         errorHandler(decoderError.localizedDescription + (simpleParse ?? ""))
 
-                        //when batch size is small and there is a lot of reslt musicbrainz.org throws an error
-                        //"Your requests are exceeding the allowable rate limit" -> as an output visible in simpleParse
+                        //  When batch size is small and there is a lot of reslt musicbrainz.org throws an error
+                        //  "Your requests are exceeding the allowable rate limit" -> as an output visible in simpleParse
                     }
                 } else {
                     errorHandler("No data received")
                 }
             }
         }.resume()
+    }
+
+    func createUrl(searchTerm: String, offset: Int) -> URL? {
+
+        var urlComponents = URLComponents()
+
+        urlComponents.scheme = "https"
+        urlComponents.host = "musicbrainz.org"
+        urlComponents.path = "/ws/2/place"
+        let query: String = String(format: "%@ AND begin:[%@ TO *]", searchTerm, String(RestConnector.minimumYear))
+        urlComponents.queryItems = [URLQueryItem(name: "query", value: query),
+                                    URLQueryItem(name: "limit", value: String(RestConnector.batchSize)),
+                                    URLQueryItem(name: "offset", value: String(offset))]
+
+        return urlComponents.url
     }
 
 //    func sendHttpRequest<T: Codable>(url: URL, errorHandler: @escaping (_ error: Error?) -> Void, successHandler: @escaping (_ object: T) -> Void) {

@@ -11,6 +11,7 @@ import MapKit
 
 class PlaceMarkerView: MKMarkerAnnotationView {
 
+    // Custom place marker view, setting marker image
     override var annotation: MKAnnotation? {
         willSet {
             guard let placeMarker = newValue as? PlaceMarker else { return }

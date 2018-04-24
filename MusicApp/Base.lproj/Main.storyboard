@@ -10,10 +10,10 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--Map View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="MusicApp" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="mapView" useStoryboardIdentifierAsRestorationIdentifier="YES" id="BYZ-38-t0r" customClass="MapViewController" customModule="MusicApp" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -35,37 +35,42 @@
                                     <outlet property="delegate" destination="BYZ-38-t0r" id="mt9-4d-wL8"/>
                                 </connections>
                             </searchBar>
-                            <stackView opaque="NO" alpha="0.90000000000000002" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="2dV-HX-OcF">
-                                <rect key="frame" x="188" y="647" width="0.0" height="0.0"/>
-                                <subviews>
-                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iqx-mo-QKT">
-                                        <rect key="frame" x="-188" y="-647" width="220" height="0.0"/>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        <inset key="contentEdgeInsets" minX="15" minY="7" maxX="20" maxY="7"/>
-                                        <state key="normal" title="Move map to fit all markers"/>
-                                        <connections>
-                                            <action selector="onFitAll:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Ma8-m9-xPz"/>
-                                        </connections>
-                                    </button>
-                                </subviews>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iqx-mo-QKT">
+                                <rect key="frame" x="77" y="615" width="220" height="32"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                            </stackView>
+                                <inset key="contentEdgeInsets" minX="15" minY="7" maxX="20" maxY="7"/>
+                                <state key="normal" title="Move map to fit all markers"/>
+                                <connections>
+                                    <action selector="onFitAll:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Ma8-m9-xPz"/>
+                                </connections>
+                            </button>
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Error" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TA0-4h-oQR">
+                                <rect key="frame" x="167" y="101" width="41.5" height="20.5"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                <color key="textColor" red="1" green="0.14913141730000001" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="2dV-HX-OcF" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="0eK-al-Qoa"/>
                             <constraint firstItem="34v-GI-Hem" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="1Q8-pP-h7A"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="5HK-OX-KvW" secondAttribute="trailing" constant="35" id="5We-3i-SwC"/>
                             <constraint firstItem="5HK-OX-KvW" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="20" id="5s0-E5-Y2T"/>
+                            <constraint firstItem="iqx-mo-QKT" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="Qdq-Ks-wYL"/>
+                            <constraint firstItem="TA0-4h-oQR" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="25" id="Vlr-Pw-ob9"/>
+                            <constraint firstItem="TA0-4h-oQR" firstAttribute="top" secondItem="5HK-OX-KvW" secondAttribute="bottom" constant="5" id="XWN-rr-jqG"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="iqx-mo-QKT" secondAttribute="bottom" constant="20" id="Xpi-dm-WAj"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="TA0-4h-oQR" secondAttribute="trailing" constant="25" id="b9V-6c-Vi8"/>
                             <constraint firstAttribute="trailing" secondItem="34v-GI-Hem" secondAttribute="trailing" id="bi8-hn-oO9"/>
                             <constraint firstItem="34v-GI-Hem" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="eGG-3n-FF5"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="2dV-HX-OcF" secondAttribute="bottom" constant="20" id="kVb-S9-m8x"/>
+                            <constraint firstItem="TA0-4h-oQR" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="gL3-ck-KAX"/>
                             <constraint firstItem="5HK-OX-KvW" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="35" id="o68-i0-Jd7"/>
                             <constraint firstAttribute="bottom" secondItem="34v-GI-Hem" secondAttribute="bottom" id="vtN-Ye-EnV"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
+                        <outlet property="errorLabel" destination="TA0-4h-oQR" id="C0Y-Lp-Mt1"/>
                         <outlet property="fitMarkersButton" destination="iqx-mo-QKT" id="C10-dl-dlK"/>
                         <outlet property="mapView" destination="34v-GI-Hem" id="2Jd-qx-oOr"/>
                         <outlet property="searchBar" destination="5HK-OX-KvW" id="0iX-f6-hzc"/>
